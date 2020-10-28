@@ -1,7 +1,10 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\TinyUrl;
+use App\Form\TinyUrlType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -10,12 +13,33 @@ class Home extends AbstractController
     /**
      * @Route("/", name="Homepage")
      */
-    public function home(): Response
+    public function home(Request $request): Response
     {
-        $number = $this->genUniqueString();
+        $tinyUrl = new TinyUrl();
+        $form = $this->createForm(TinyUrlType::class, $tinyUrl, [
+            'action' => $this->generateUrl('Homepage'),
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task = $form->getData();
+            //@TODO save in db
+            return $this->redirectToRoute('view');
+        }
 
         return $this->render('home.html.twig', [
-            'string' => $number,
+            'string' => $this->genUniqueString(),
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/view", name="view")
+     */
+    public function view(): Response
+    {
+        //@TODO display new url details
+        return $this->render('view.html.twig', [
         ]);
     }
 
