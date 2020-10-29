@@ -1,6 +1,18 @@
 # Tiny URL in symfony
 This was built for a code challenge that requires generating a random, unique 5-9 length alphanumeric string.
 
+# Installation
+Standard symfony project using `encore/webpack` with `yarn` 
+
+1. download and place on php 7.4+x64 server of your choice or use `symfony server:start` for a local dev build after doing the below
+2. create database and add credentials to .env
+3. `composer install`
+4. `php bin/console doctrine:migrations:migrate`
+5. `yarn install`
+6. `yarn encore production`
+
+The routes are `http://server/`, `http://server/view/{short}` and `http://server/{short}`
+
 # The method used
 There are multiple ways one can gnerate this string.
 
