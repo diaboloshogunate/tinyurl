@@ -6,6 +6,7 @@ use App\Form\TinyUrlType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class Home extends AbstractController
@@ -49,6 +50,8 @@ class Home extends AbstractController
             ->getRepository(TinyUrl::class)
             ->findOneBy(['short' => $short]);
 
+        if(!$tinyUrl) throw new NotFoundHttpException();
+
         return $this->render('view.html.twig', [
             'url' => $tinyUrl,
         ]);
@@ -62,6 +65,8 @@ class Home extends AbstractController
         $tinyUrl = $this->getDoctrine()
             ->getRepository(TinyUrl::class)
             ->findOneBy(['short' => $short]);
+
+        if(!$tinyUrl) throw new NotFoundHttpException();
 
         return $this->redirect($tinyUrl->getFull());
     }
