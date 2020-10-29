@@ -15,6 +15,7 @@ class Home extends AbstractController
      */
     public function home(Request $request): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
         $tinyUrl = new TinyUrl();
         $form = $this->createForm(TinyUrlType::class, $tinyUrl, [
             'action' => $this->generateUrl('Homepage'),
@@ -22,24 +23,34 @@ class Home extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $task = $form->getData();
-            //@TODO save in db
-            return $this->redirectToRoute('view');
+            $string = $this->genUniqueString();
+
+            $tinyUrl = $form->getData();
+            $tinyUrl->setShort($string);
+
+            $entityManager->persist($tinyUrl);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('view', ['short' => $string]);
         }
 
         return $this->render('home.html.twig', [
-            'string' => $this->genUniqueString(),
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/view", name="view")
+     * @Route("/view/{short}", name="view")
      */
-    public function view(): Response
+    public function view(string $short): Response
     {
-        //@TODO display new url details
+
+        $tinyUrl = $this->getDoctrine()
+            ->getRepository(TinyUrl::class)
+            ->findOneBy(['short' => $short]);
+
         return $this->render('view.html.twig', [
+            'url' => $tinyUrl,
         ]);
     }
 
@@ -93,7 +104,12 @@ class Home extends AbstractController
         $max = $this->countUniqueValues($charCount, $min, $max);
         $offset = $this->getMinOffset($charCount, $min);
         $number = random_int(0, $max);
+        $string = $this->intToString($number, $chracters, $charCount, $offset);
 
-        return $this->intToString($number, $chracters, $charCount, $offset);
+        $tinyUrl = $this->getDoctrine()
+            ->getRepository(TinyUrl::class)
+            ->findOneBy(['short' => $string]);
+
+        return $tinyUrl ? $this->genUniqueString($min, $max, $chracters) : $string;
     }
 }

@@ -1,4 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>Success</h1>
+    <h1>Details</h1>
+    <p>
+        <a href="{{ url('Homepage') ~ url.short }}" target="_blank" rel="nofollow">{{ url('Homepage') ~ url.short }}</a>
+        will redirect to
+        <a href="{{ url.full }}" target="_blank" rel="nofollow">{{ url.full }}</a>
+    </p>
 {% endblock %}
