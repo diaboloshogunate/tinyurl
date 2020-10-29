@@ -40,7 +40,7 @@ class Home extends AbstractController
     }
 
     /**
-     * @Route("/view/{short}", name="view")
+     * @Route("/view/{short}", name="view", requirements={"short"="[a-z0-9]+"})
      */
     public function view(string $short): Response
     {
@@ -52,6 +52,18 @@ class Home extends AbstractController
         return $this->render('view.html.twig', [
             'url' => $tinyUrl,
         ]);
+    }
+
+    /**
+     * @Route("/{short}", name="reroute", requirements={"short"="[a-z0-9]+"})
+     */
+    public function reroute(string $short): Response
+    {
+        $tinyUrl = $this->getDoctrine()
+            ->getRepository(TinyUrl::class)
+            ->findOneBy(['short' => $short]);
+
+        return $this->redirect($tinyUrl->getFull());
     }
 
     /**
