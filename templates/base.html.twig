@@ -8,7 +8,8 @@
         {% endblock %}
     </head>
     <body>
-        <div class="container">
+        {% include "partials/menu.html.twig" %}
+        <div class="container pt-5 pb-5">
             <div class="row">
                 <div class="col">
                     {% block body %}{% endblock %}

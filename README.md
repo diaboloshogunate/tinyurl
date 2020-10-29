@@ -49,10 +49,6 @@ I am structuring the database for this method.
 I have the auto increment id set to big int since int can't handle the range of values needed for all the possibilities.
 
 I have the short url set to unique which gives it an index for faster lookup.
-
-**Depending on the database, I would suspect that an int lookup might be faster but haven't researched or tested it.**
-**It would not be hard to change. you can easily disable `auto_increment` and store the numerical value instead of the string.**
-**This is another thing I might do later for fun.**
  
 ## Guaranteed uniqueness 
 Neither of these methods guarantees uniqueness so the database is checked to see if the value is taken. If it is try again.
@@ -61,11 +57,12 @@ The likelihood of collisions is small until a lot of values have been taken.
 
 If you want to guarantee a unique value every time, you would need to build all the values and select one that is not used.
 
-I am not doing this simply because of how many values there are but I may add it in as an option for fun later. 
-The values can easily be generated with fixutres and stored in a csv or in the database. If using the database, 
-I would guess it would be more efficient to have two tables of available values and taken values instead of one 
-so you can select a random available value more quickly. 
+I am not doing this simply because of how many possible values there are.
+ 
+The values can easily be generated with fixutres and stored in a csv or in the database. 
+If using the database, it would be more efficient to have two tables.
+One of available values and another taken values, allowing you can select a random available value more quickly. 
 
 ## Additional notes
 - If I add the other methods as options I will allow them to be chosen via config values
-- I would consider having it automatically switch from the math method to the Guaranteed method once there are enough values for collisions to take place
+- I may consider having it automatically switch from the math method to the guaranteed method once there are enough values for collisions to take place every 10 or so attempts on average
